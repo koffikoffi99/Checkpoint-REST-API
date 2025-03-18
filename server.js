@@ -42,7 +42,7 @@ router.post("/users", async (req, res) => {
     });
     try {
         const newUser = await user.save();
-        res.status(500).json({ newUser });
+        res.status(201).json({ newUser });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -53,7 +53,7 @@ router.post("/users", async (req, res) => {
 router.get("/users", async (req, res) => {
     try {
         const users = await User.find()
-        res.json(users)
+        res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message })
     }

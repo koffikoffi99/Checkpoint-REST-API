@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const User = require('./models/User');
 
 const router = express.Router();
+app.use(router);
 
 
 //On crée une fonction asynchrone appelée "databaseconnection" pour se connecter à la base de données
@@ -59,33 +60,33 @@ router.get("/users", async (req, res) => {
     }
 });
 
-// ÉDITER UN UTILISATEUR PAR ID
-router.put("/users/:id", async (req, res, next) => {
+//editer un utilisateur par ID
+router.put("/users/:id", async (req, res) => {
     try {
-        const updateUser = await User.findOneAndUpdate(
+        const updateUser = await User.findByIdAndUpdate(
             { _id: req.params.id },
             { $set: req.body }
         );
         if (!updateUser) {
-            res.status(404).send("Utilisateur non trouvé");
+            res.status(404).json({ message: "Utilisateur non trouvé" });
         }
-        res.status(201).send(updateUser);
+        res.status(201).json(updateUser);
 
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({ error: err.message });
     }
 });
 
-//DELETE : SUPPRIMER UN UTILISATEUR PAR ID
+//supprimer un utilisateur par ID
 router.delete("/users/:id", async (req, res) => {
     try {
-        const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
+        const deletedUser = await User.findByIdAndDelete({ _id: req.params.id });
         if (!deletedUser) {
-            return res.status(404).send("Utilisateur non trouvé");
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
         }
-        res.status(200).send("Suppression réussie");
+        res.status(200).json({ message: "Utilisateur supprimé avec succès" });
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({ error: err.message });
     }
 });
 
